@@ -3,24 +3,41 @@
         <div class="middles">
             <div class="middles-a">
                 <div class="a-left"></div>
-                <input type="text" placeholder="搜索">
+                <input type="text" placeholder="搜索" v-model="inputext">
             </div>
             <div class="middles-b">
-                <div class="b-list">
-                    <div class="list-user" v-for="(item,index) in userList" :key="index">
+                <div class="b-list" v-show="halo">
+                    <div class="list-user" v-for="(item,index) in userList" :key="index" @click="onchat(item.username,item.imgUrl)">
                         <div class="user-left">
                             <img :src="item.imgUrl" />
                         </div>
-                        <div class="user-right" @click="onchat(item.username,item.imgUrl)">
+                        <div class="user-right">
                             <div class="user-right-a">
                                 <div class="right-a-a">{{item.username}}</div>
                                 <div class="right-a-b">{{timer}}</div>
                             </div>    
                             <div class="user-right-b">{{messages}}</div>
                         </div>
+                        
 
                     </div>
                 </div>
+                 <div class="b-list" v-show="halos">
+                      <div class="list-user" v-for="(item,index) in hadio" :key="index" @click="onchat(item.username,item.imgUrl)">
+                        <div class="user-left">
+                            <img :src="item.imgUrl" />
+                        </div>
+                        <div class="user-right">
+                            <div class="user-right-a">
+                                <div class="right-a-a">{{item.username}}</div>
+                                <div class="right-a-b">{{timer}}</div>
+                            </div>    
+                            <div class="user-right-b">{{messages}}</div>
+                        </div>
+                        
+
+                    </div>
+                 </div>
             </div>
         </div>
     </div>
@@ -36,12 +53,15 @@ export default {
             inputext:"",
             messages:"", 
             userList:[
-                {imgUrl:require("../assets/user1.png"),username:"甲"},
-                {imgUrl:require("../assets/user2.png"),username:"乙"},
-                {imgUrl:require("../assets/user3.png"),username:"丙"},
-                {imgUrl:require("../assets/user4.png"),username:"丁"}
+                {imgUrl:require("../assets/user1.png"),username:"甲",id:1},
+                {imgUrl:require("../assets/user2.png"),username:"乙",id:2},
+                {imgUrl:require("../assets/user3.png"),username:"丙",id:3},
+                {imgUrl:require("../assets/user4.png"),username:"丁",id:4}
                 ],
             timer:"",
+            hadio:[],
+            halo:true,
+            halos:false
             
         }
     },
@@ -50,6 +70,61 @@ export default {
             
             bus.$emit('halo',true,username,imgUrl);
         },
+    },
+    watch:{
+        inputext(newText,oldText){
+          var current = this.userList.findIndex(v => v.username == newText);
+            if(newText === ""){
+                this.halo = true;
+                this.halos = false;
+                this.hadio = [];
+                this.userList = this.userList.sort(function(a,b){
+                    if(a.id<b.id){
+                        return -1;
+                    }else if(a.id>b.id){
+                        return 1;
+                    }else{
+                        return 0;
+                    }
+                });
+            }else{
+                if(current === -1){
+                this.halo = false;
+                this.halos = true;
+                this.hadio = [];
+            }else{
+                this.hadio.push(this.userList[current]);
+                this.halo = false;
+                this.halos = true; 
+                this.userList.splice(current,1);
+                this.userList = this.hadio.concat(this.userList);
+                
+            }
+            }
+
+
+            // if(current === -1){
+            //     this.halo = true;
+            //     this.halos = false;
+            //     this.hadio = [];
+            //     this.userList = this.userList.sort(function(a,b){
+            //         if(a.id<b.id){
+            //             return -1;
+            //         }else if(a.id>b.id){
+            //             return 1;
+            //         }else{
+            //             return 0;
+            //         }
+            //     });
+            // }else{
+            //     this.hadio.push(this.userList[current]);
+            //     this.halo = false;
+            //     this.halos = true; 
+            //     this.userList.splice(current,1);
+            //     this.userList = this.hadio.concat(this.userList);
+                
+            // }
+        }
     }
 }
 </script>

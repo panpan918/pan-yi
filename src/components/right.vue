@@ -25,7 +25,7 @@
                 <div class="body-c-c" @click="filed"></div>
             </div>
             <textarea  class="body-c-d" placeholder="请输入信息" v-model="inputCont"></textarea>
-            <div class="body-c-e" @click="sent()">发送</div> 
+            <div class="body-c-e" @click="sent">发送</div> 
         </div>
     </div>
 </template>
